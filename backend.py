@@ -6,17 +6,28 @@ load_dotenv()
 API_KEY = os.getenv("WEATHER_API_KEY")
 
 def get_data(place, forecast_days, kind):
-    url = f"https://api.openweathermap.org/data/2.5/forecast?q={place}&cnt={forecast_days}&appid={API_KEY}&units=metric"
+    url = f"https://api.openweathermap.org/data/2.5/forecast?q={place}&appid={API_KEY}&units=metric"
     
     response = requests.get(url)
     data = response.json()
     
-    if kind == "Temperature":
-        return [d["main"]["temp"] for d in data["list"]]
-    elif kind == "Sky":
-        return [d["weather"][0]["main"] for d in data["list"]]
+    filtered_data = data["list"]
+    nr_values = 8 * forecast_days
+    filtered_data = filtered_data[:nr_values]
     
-    return data
+    dates = []
+    temperatures = []
+    sky_conditions = []
+    
+    for data_point in filtered_data:
+        dates.append(data_point["dt_txt"])
+        temperatures.append(data_point["main"]["temp"])
+        sky_conditions.append(data_point["weather"][0]["main"])
+    
+    if kind == "Temperature":
+        return dates, temperatures
+    elif kind == "Sky":
+        return dates, sky_conditions
 
 if __name__ == "__main__":
     print(get_data(place="New York", forecast_days=5, kind="Temperature"))
