@@ -15,19 +15,14 @@ def get_data(place, forecast_days, kind):
     nr_values = 8 * forecast_days
     filtered_data = filtered_data[:nr_values]
     
-    dates = []
-    temperatures = []
-    sky_conditions = []
-    
-    for data_point in filtered_data:
-        dates.append(data_point["dt_txt"])
-        temperatures.append(data_point["main"]["temp"])
-        sky_conditions.append(data_point["weather"][0]["main"])
-    
     if kind == "Temperature":
-        return dates, temperatures
-    elif kind == "Sky":
-        return dates, sky_conditions
+       filtered_data = [dict["main"["temp"]] for dict in filtered_data]
+    else:
+        filtered_data = [dict["weather"][0]["main"] for dict in filtered_data]
+        
+    return filtered_data
+    
+
 
 if __name__ == "__main__":
     print(get_data(place="New York", forecast_days=5, kind="Temperature"))
