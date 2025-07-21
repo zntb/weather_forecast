@@ -1,5 +1,7 @@
 import streamlit as st
 import plotly.express as px
+from backend import get_data
+
 
 st.title("Weather Forecast for the Next Days")
 place = st.text_input("Place: ")
@@ -11,11 +13,7 @@ st.subheader(f"{option} in {place}")
 all_dates = ["2025-01-01", "2025-01-02", "2025-01-03", "2025-01-04", "2025-01-05"]
 all_temperatures = [-1, 2, 1, -5, 0]
 
-# Slice the data based on the selected number of days
-def get_data(days):
-    dates = all_dates[:days]
-    temperatures = all_temperatures[:days]
-    return dates, temperatures
+data = get_data(place, days, option)
 
 d, t  = get_data(days)
 
